@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dijital Tanık — Portal</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242736;
+    --border: #2e3347;
+    --primary: #6c63ff;
+    --primary-dark: #5a52d5;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Giriş Ekranı ── */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 0%, #1e1b4b 0%, var(--bg) 70%);
+  }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+
+  .logo-text h1 { font-size: 20px; font-weight: 700; }
+  .logo-text p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Ana Layout ── */
+  #app { display: none; min-height: 100vh; }
+
+  .navbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+  .nav-brand span { color: var(--primary); }
+
+  .nav-user { display: flex; align-items: center; gap: 12px; }
+  .user-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .main-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* ── Kartlar ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .card-title { font-size: 16px; font-weight: 600; }
+  .card-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* ── Ders Kartları ── */
+  .course-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .course-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--primary);
+  }
+
+  .course-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(108,99,255,0.15);
+  }
+
+  .course-code {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--primary);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .course-name { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+
+  .course-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── Butonlar ── */
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  .btn-success:hover { background: #16a34a; }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── Form ── */
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { outline: none; border-color: var(--primary); }
+
+  /* ── Tablo ── */
+  .table { width: 100%; border-collapse: collapse; }
+  .table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table tr:last-child td { border-bottom: none; }
+  .table tr:hover td { background: var(--surface2); }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-success { background: rgba(34,197,94,0.15); color: var(--success); }
+  .badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .badge-danger  { background: rgba(239,68,68,0.15);  color: var(--danger); }
+  .badge-primary { background: rgba(108,99,255,0.15); color: var(--primary); }
+
+  /* ── Stat kartları ── */
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-value { font-size: 32px; font-weight: 700; color: var(--primary); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── QR Kodu alanı ── */
+  .qr-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  .code-display {
+    background: var(--surface2);
+    border: 2px dashed var(--primary);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--primary);
+    word-break: break-all;
+  }
+
+  /* ── Yoklama Listesi ── */
+  .student-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: var(--surface2);
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .student-row.verified { border-color: rgba(34,197,94,0.3); }
+  .student-row.suspicious { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+    max-width: 360px;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { border-color: var(--success); color: var(--success); }
+  #toast.error   { border-color: var(--danger);  color: var(--danger);  }
+
+  /* ── Loading ── */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Simülatör ── */
+  .sim-card {
+    background: linear-gradient(135deg, rgba(108,99,255,0.1), rgba(168,85,247,0.05));
+    border: 1px solid rgba(108,99,255,0.3);
+  }
+
+  .sim-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  /* ── Sections ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── Back button ── */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--text); }
+
+  .separator {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .login-card { margin: 16px; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── GİRİŞ EKRANI ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">🎓</div>
+      <div class="logo-text">
+        <h1>Dijital Tanık</h1>
+        <p>Akademisyen Portalı</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Kullanıcı Adı</label>
+      <input class="form-input" id="username" type="text"
+             placeholder="zafer.bozyer" value="zafer.bozyer">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Şifre</label>
+      <input class="form-input" id="password" type="password"
+             placeholder="••••••••" value="akademisyen123">
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="login()">
+      Giriş Yap
+    </button>
+
+    <p style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:20px">
+      Test: zafer.bozyer / akademisyen123
+    </p>
+  </div>
+</div>
+
+<!-- ── ANA UYGULAMA ── -->
+<div id="app">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span>🎓</span>
+      Dijital Tanık
+    </div>
+    <div class="nav-user">
+      <div class="user-badge" id="nav-user-name">—</div>
+      <button class="btn btn-outline btn-sm" onclick="logout()">Çıkış</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+
+    <!-- BÖLÜM 1: Dersler -->
+    <div id="section-courses" class="section active">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Derslerim</div>
+            <div class="card-subtitle">Yoklama başlatmak için bir ders seçin</div>
+          </div>
+        </div>
+        <div id="courses-list" class="grid-2">
+          <!-- JS ile doldurulur -->
+        </div>
+      </div>
+    </div>
+
+    <!-- BÖLÜM 2: Ders Detay + Yoklama Başlat -->
+    <div id="section-course-detail" class="section">
+      <div class="back-btn" onclick="showSection('courses')">← Derslere Dön</div>
+
+      <div id="course-detail-header" class="card" style="margin-bottom:20px">
+        <!-- JS ile doldurulur -->
+      </div>
+
+      <div class="grid-2">
+        <!-- Öğrenci Listesi -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Kayıtlı Öğrenciler</div>
+          </div>
+          <div id="student-list-detail">
+            <!-- JS ile doldurulur -->
+          </div>
+        </div>
+
+        <!-- Yoklama Başlat -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Yoklama Başlat</div>
+          </div>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px">
+            Yoklamayı başlatınca sistem benzersiz bir kod üretecek.
+            Bu kod yalnızca <strong>bir kez</strong> gösterilecektir.
+          </p>
+          <button class="btn btn-primary" style="width:100%" onclick="startSession()">
+            🚀 Yoklamayı Başlat
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BÖLÜM 3: Aktif Yoklama -->
+    <div id="section-active-session" class="section">
+      <div class="back-btn" onclick="confirmEndSession()">← Yoklamayı Sonlandır</div>
+
+      <!-- Yoklama kodu (bir kez gösterilir) -->
+      <div id="yoklama-kodu-container" class="card sim-card" style="margin-bottom:20px">
+        <div class="sim-title">⚠️ Yoklama Kodu — Yalnızca Bir Kez Görünür</div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px">
+          Bu kodu akademisyen tabletine aktarın. Sayfayı yenileyince tekrar görüntülenemez.
+        </p>
+        <div class="code-display" id="yoklama-kodu-display">—</div>
+        <div style="display:flex; gap:10px; margin-top:16px">
+          <button class="btn btn-outline btn-sm" onclick="copyCode()">📋 Kopyala</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('yoklama-kodu-container').style.display='none'">
+            🙈 Gizle
+          </button>
+        </div>
+      </div>
+
+      <!-- İstatistikler -->
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-joined">0</div>
+          <div class="stat-label">Portal'dan Katıldı</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-verified" style="color:var(--success)">0</div>
+          <div class="stat-label">BLE ile Derslikte</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-suspicious" style="color:var(--warning)">0</div>
+          <div class="stat-label">Şüpheli Cihaz</div>
+        </div>
+      </div>
+
+      <!-- Test Simülatörü -->
+      <div class="card sim-card" style="margin-bottom:20px">
+        <div class="card-header">
+          <div>
+            <div class="sim-title">🧪 Test Simülatörü</div>
+            <div class="card-title">Öğrenci Yoklama Simülasyonu</div>
+            <div class="card-subtitle" style="font-size:12px">
+              Gerçek sistemde APK üzerinden yapılır — burada manuel test
+            </div>
+          </div>
+        </div>
+
+        <!-- Adım 1: Öğrenci portal katılımı -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:13px; font-weight:600; color:var(--text-muted);
+                      text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px">
+            Adım 1 — Öğrenci Portala Katılır (APK → Portal HTTPS)
+          </div>
+          <div class="grid-2">
+            <div>
+              <label class="form-label">Öğrenci Seç</label>
+              <select class="form-input" id="sim-student-select">
+                <option value="">— Öğrenci seç —</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Cihaz ID (simüle)</label>
+              <input class="form-input" id="sim-device-id"
+                     placeholder="android_device_001" value="android_device_001">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top:12px"
+                  onclick="simStudentJoin()">
+            📱 Öğrenci Yoklamaya Katıl
+          </button>
+        </div>
+
+        <hr class="separator">
+
+        <!-- Adım 2: BLE token simülasyonu -->
+        <div>
+          <div style="font-size:13px; font-weight:600; color:var(--text-muted);
+                      text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px">
+            Adım 2 — Akademisyen BLE Token'ları Gönderir (Tablet → Portal)
+          </div>
+          <label class="form-label">BLE Token Listesi (virgülle ayırın)</label>
+          <textarea class="form-input" id="sim-ble-tokens" rows="3"
+                    placeholder="a3f7b2c9d1e4f608, b8c2d4e6f1a3b5c7..."></textarea>
+          <div style="display:flex; gap:10px; margin-top:12px; align-items:center">
+            <button class="btn btn-success btn-sm" onclick="simVerifyBle()">
+              📡 BLE Token'ları Doğrula
+            </button>
+            <span style="font-size:12px; color:var(--text-muted)">
+              Katılan öğrencilerin token'ları otomatik doldurulur →
+            </span>
+            <button class="btn btn-outline btn-sm" onclick="fillBleTokens()">
+              Otomatik Doldur
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yoklama Listesi -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Sınıf Listesi</div>
+          <button class="btn btn-outline btn-sm" onclick="refreshRoster()">🔄 Yenile</button>
+        </div>
+        <div id="roster-list">
+          <p style="color:var(--text-muted); font-size:14px; padding:20px; text-align:center">
+            Henüz yoklama kaydı yok
+          </p>
+        </div>
+        <hr class="separator">
+        <div style="display:flex; justify-content:flex-end; gap:10px">
+          <button class="btn btn-outline" onclick="confirmEndSession()">
+            ❌ İptal
+          </button>
+          <button class="btn btn-success" onclick="finalizeSession()" id="btn-finalize">
+            ✅ Sui'ye Gönder ve Onayla
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+let state = {
+  user: null,
+  courses: [],
+  selectedCourse: null,
+  activeSession: null,
+  yoklamaKodu: null,
+  roster: [],
+  joinedTokens: [] // Simülatörde biriken BLE token'lar
+};
+
+// ── Yardımcı ───────────────────────────────────────────────
+function toast(msg, type='success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  setTimeout(() => el.className = '', 3000);
+}
+
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include'
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Sunucu hatası');
+  return data;
+}
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`section-${name}`).classList.add('active');
+}
+
+function copyCode() {
+  const code = document.getElementById('yoklama-kodu-display').textContent;
+  navigator.clipboard.writeText(code);
+  toast('Kod kopyalandı!');
+}
+
+// ── Auth ───────────────────────────────────────────────────
+async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  try {
+    const data = await api('POST', '/api/auth/login', { username, password });
+    state.user = data.user;
+    document.getElementById('nav-user-name').textContent = data.user.fullName;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadCourses();
+    toast(`Hoş geldiniz, ${data.user.fullName}`);
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+async function logout() {
+  await api('POST', '/api/auth/logout');
+  location.reload();
+}
+
+// ── Dersler ────────────────────────────────────────────────
+async function loadCourses() {
+  const data = await api('GET', '/api/courses');
+  state.courses = data.courses;
+  renderCourses();
+}
+
+function renderCourses() {
+  const el = document.getElementById('courses-list');
+  el.innerHTML = state.courses.map(c => `
+    <div class="course-card" onclick="selectCourse('${c.id}')">
+      <div class="course-code">${c.code}</div>
+      <div class="course-name">${c.name}</div>
+      <div class="course-meta">
+        <span>🎓 Akademisyen: ${state.user.fullName}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function selectCourse(courseId) {
+  state.selectedCourse = state.courses.find(c => c.id === courseId);
+  
+  // Ders başlığı
+  document.getElementById('course-detail-header').innerHTML = `
+    <div class="course-code" style="font-size:14px">${state.selectedCourse.code}</div>
+    <div style="font-size:22px; font-weight:700; margin:4px 0">${state.selectedCourse.name}</div>
+    <div style="color:var(--text-muted); font-size:13px">Akademisyen: ${state.user.fullName}</div>
+  `;
+
+  // Öğrenci listesi
+  const data = await api('GET', `/api/courses/${courseId}/students`);
+  const students = data.students;
+  
+  document.getElementById('student-list-detail').innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Öğrenci No</th>
+          <th>Ad Soyad</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${students.map(s => `
+          <tr>
+            <td><code style="color:var(--primary)">${s.studentNo}</code></td>
+            <td>${s.fullName}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+
+  // Simülatör öğrenci seçeneği
+  const sel = document.getElementById('sim-student-select');
+  sel.innerHTML = '<option value="">— Öğrenci seç —</option>' +
+    students.map(s => `<option value="${s.id}">${s.fullName} (${s.studentNo})</option>`).join('');
+
+  showSection('course-detail');
+}
+
+// ── Oturum ─────────────────────────────────────────────────
+async function startSession() {
+  try {
+    const data = await api('POST', '/api/sessions/start', {
+      courseId: state.selectedCourse.id
+    });
+    
+    state.activeSession = data.sessionId;
+    state.yoklamaKodu = data.yoklamaKodu;
+    state.joinedTokens = [];
+
+    // Yoklama kodunu göster
+    document.getElementById('yoklama-kodu-display').textContent = data.yoklamaKodu;
+    document.getElementById('yoklama-kodu-container').style.display = 'block';
+
+    // Sayaçları sıfırla
+    document.getElementById('stat-joined').textContent = '0';
+    document.getElementById('stat-verified').textContent = '0';
+    document.getElementById('stat-suspicious').textContent = '0';
+    document.getElementById('roster-list').innerHTML =
+      '<p style="color:var(--text-muted); font-size:14px; padding:20px; text-align:center">Henüz yoklama kaydı yok</p>';
+
+    showSection('active-session');
+    toast('Yoklama başlatıldı!');
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+function confirmEndSession() {
+  if (confirm('Yoklamayı sonlandırmak istediğinize emin misiniz?')) {
+    state.activeSession = null;
+    state.yoklamaKodu = null;
+    state.joinedTokens = [];
+    showSection('courses');
+  }
+}
+
+async function refreshRoster() {
+  if (!state.activeSession) return;
+  try {
+    const data = await api('GET', `/api/sessions/${state.activeSession}`);
+    renderRoster(data.roster);
+    document.getElementById('stat-joined').textContent = data.totalJoined;
+    document.getElementById('stat-verified').textContent = data.totalVerified;
+    
+    // Şüpheli cihaz sayısı
+    const suspicious = data.roster.filter(r => {
+      const sameDevice = data.roster.filter(x => x.deviceId === r.deviceId);
+      return sameDevice.length > 1;
+    });
+    const uniqueSuspicious = new Set(suspicious.map(s => s.deviceId)).size;
+    document.getElementById('stat-suspicious').textContent = uniqueSuspicious;
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+function renderRoster(roster) {
+  if (!roster || roster.length === 0) {
+    document.getElementById('roster-list').innerHTML =
+      '<p style="color:var(--text-muted); font-size:14px; padding:20px; text-align:center">Henüz yoklama kaydı yok</p>';
+    return;
+  }
+
+  // Aynı cihazdan gelen kayıtları işaretle
+  const deviceCounts = {};
+  roster.forEach(r => {
+    if (r.deviceId) deviceCounts[r.deviceId] = (deviceCounts[r.deviceId] || 0) + 1;
+  });
+
+  document.getElementById('roster-list').innerHTML = roster.map(r => {
+    const isSuspicious = deviceCounts[r.deviceId] > 1;
+    const rowClass = isSuspicious ? 'suspicious' : r.bleVerified ? 'verified' : '';
+    return `
+      <div class="student-row ${rowClass}">
+        <div>
+          <div style="font-weight:600">${r.studentName}</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:2px">
+            Cihaz: <code>${r.deviceId || '—'}</code>
+            ${isSuspicious ? ' <span style="color:var(--danger)">⚠️ Şüpheli cihaz</span>' : ''}
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px">
+          <span style="font-size:12px; color:var(--text-muted)">
+            ${new Date(r.portalJoinedAt).toLocaleTimeString('tr-TR')}
+          </span>
+          ${r.bleVerified
+            ? '<span class="badge badge-success">✓ Derslikte</span>'
+            : '<span class="badge badge-warning">⏳ BLE bekleniyor</span>'
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function finalizeSession() {
+  if (!state.activeSession) return;
+  if (!confirm('Yoklamayı Sui blockchain\'e göndermek istediğinize emin misiniz?\nBu işlem geri alınamaz.')) return;
+
+  try {
+    // Gerçekte burada Sui transaction gönderilir
+    // Test için sahte bir tx hash kullanıyoruz
+    const fakeSuiTxHash = '0x' + Array.from({length:64}, () =>
+      Math.floor(Math.random()*16).toString(16)).join('');
+
+    const data = await api('POST', `/api/sessions/${state.activeSession}/finalize`, {
+      suiTxHash: fakeSuiTxHash
+    });
+
+    toast('✅ Yoklama Sui\'ye gönderildi!');
+    
+    // Detay göster
+    setTimeout(() => {
+      alert(`✅ Yoklama başarıyla kaydedildi!\n\nSui TX Hash:\n${fakeSuiTxHash}`);
+      state.activeSession = null;
+      showSection('courses');
+    }, 500);
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+// ── Simülatör ──────────────────────────────────────────────
+async function simStudentJoin() {
+  const studentId = document.getElementById('sim-student-select').value;
+  const deviceId  = document.getElementById('sim-device-id').value || 'android_device_001';
+
+  if (!studentId) { toast('Öğrenci seçin', 'error'); return; }
+  if (!state.activeSession) { toast('Aktif oturum yok', 'error'); return; }
+
+  try {
+    const data = await api('POST', '/api/attendance/join', {
+      sessionId: state.activeSession,
+      studentId,
+      deviceId
+    });
+
+    // Simülatörde: APK yoklama_kodu ile NFC tc_no'yu hashleyecek
+    // Biz burada portal hash'ini hesaplayarak BLE token'ı simüle ediyoruz
+    // NOT: Gerçekte APK bunu yapıyor, biz test için manuel yapıyoruz
+    
+    toast('Öğrenci yoklamaya katıldı ✓');
+    await refreshRoster();
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+async function fillBleTokens() {
+  if (!state.activeSession) { toast('Aktif oturum yok', 'error'); return; }
+  try {
+    const data = await api('GET', `/api/sessions/${state.activeSession}`);
+    
+    // Katılan öğrencilerin BLE token'larını hesapla (portal hash'inin ilk 16 char'ı)
+    // NOT: Gerçekte bu token'lar APK'dan BLE advertisement ile gelir
+    // Burada test amaçlı portal DB'den çekiyoruz
+    const res = await fetch(`/api/dev/roster-tokens/${state.activeSession}`,
+      { credentials: 'include' });
+    const tokenData = await res.json();
+    
+    if (tokenData.tokens && tokenData.tokens.length > 0) {
+      document.getElementById('sim-ble-tokens').value = tokenData.tokens.join(', ');
+      toast('BLE token\'lar dolduruldu');
+    } else {
+      toast('Henüz katılan öğrenci yok', 'error');
+    }
+  } catch(e) {
+    // Fallback: roster'dan token'ları tahmin et
+    toast('Token\'lar yüklenemedi, manuel girin', 'error');
+  }
+}
+
+async function simVerifyBle() {
+  const input = document.getElementById('sim-ble-tokens').value.trim();
+  if (!input) { toast('BLE token girin', 'error'); return; }
+
+  const tokens = input.split(',').map(t => t.trim()).filter(Boolean);
+  if (!state.activeSession) { toast('Aktif oturum yok', 'error'); return; }
+
+  try {
+    const data = await api('POST', '/api/attendance/verify-ble', {
+      sessionId: state.activeSession,
+      bleTokens: tokens
+    });
+
+    toast(`${data.totalVerified} öğrenci sınıfta doğrulandı ✓`);
+
+    if (data.suspicious) {
+      setTimeout(() => {
+        alert(`⚠️ Şüpheli cihaz tespit edildi!\n\n${
+          data.suspicious.map(s =>
+            `Cihaz: ${s.deviceId}\nÖğrenciler: ${s.sameDeviceStudents.join(', ')}`
+          ).join('\n\n')
+        }`);
+      }, 500);
+    }
+
+    await refreshRoster();
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+// Enter ile login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+    login();
+  }
+});
+</script>
+
+</body>
+</html>

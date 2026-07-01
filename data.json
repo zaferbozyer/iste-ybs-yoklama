@@ -1,0 +1,157 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "username": "zafer.bozyer",
+      "password": "$2a$10$SmcDFnGQpBZhrB9arANrXeLyk06JU5q2AsHMAzkg9LVPj8yyEyuzu",
+      "fullName": "Prof. Dr. Zafer Bozyer",
+      "role": "lecturer"
+    },
+    {
+      "id": "user-2",
+      "username": "2021001",
+      "password": "$2a$10$21cJGJQQYOU5v4izFFr33.n8.k.Goc5Ngh3J.dGYLFQE9F5cVpFVm",
+      "fullName": "Ali Yilmaz",
+      "role": "student",
+      "studentId": "std-1"
+    }
+  ],
+  "courses": [
+    {
+      "id": "course-1",
+      "code": "BIL301",
+      "name": "Yazilim Muhendisligi",
+      "lecturerId": "user-1"
+    },
+    {
+      "id": "course-2",
+      "code": "BIL401",
+      "name": "Yapay Zeka ve Makine Ogrenmesi",
+      "lecturerId": "user-1"
+    }
+  ],
+  "students": [
+    {
+      "id": "std-1",
+      "studentNo": "2021001",
+      "fullName": "Ali Yilmaz",
+      "tcNo": "12345678901",
+      "courseId": "course-1"
+    },
+    {
+      "id": "std-2",
+      "studentNo": "2021002",
+      "fullName": "Ayse Kaya",
+      "tcNo": "23456789012",
+      "courseId": "course-1"
+    },
+    {
+      "id": "std-3",
+      "studentNo": "2021003",
+      "fullName": "Mehmet Demir",
+      "tcNo": "34567890123",
+      "courseId": "course-1"
+    },
+    {
+      "id": "std-4",
+      "studentNo": "2021004",
+      "fullName": "Zeynep Arslan",
+      "tcNo": "45678901234",
+      "courseId": "course-1"
+    },
+    {
+      "id": "std-5",
+      "studentNo": "2021005",
+      "fullName": "Can Ozturk",
+      "tcNo": "56789012345",
+      "courseId": "course-1"
+    },
+    {
+      "id": "std-6",
+      "studentNo": "2020001",
+      "fullName": "Selin Celik",
+      "tcNo": "67890123456",
+      "courseId": "course-2"
+    },
+    {
+      "id": "std-7",
+      "studentNo": "2020002",
+      "fullName": "Burak Sahin",
+      "tcNo": "78901234567",
+      "courseId": "course-2"
+    },
+    {
+      "id": "std-8",
+      "studentNo": "2020003",
+      "fullName": "Merve Yildiz",
+      "tcNo": "89012345678",
+      "courseId": "course-2"
+    },
+    {
+      "id": "std-9",
+      "studentNo": "2020004",
+      "fullName": "Emre Kilic",
+      "tcNo": "90123456789",
+      "courseId": "course-2"
+    },
+    {
+      "id": "std-10",
+      "studentNo": "2020005",
+      "fullName": "Hande Aydin",
+      "tcNo": "01234567890",
+      "courseId": "course-2"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "01f98ec1-191b-4537-bc98-731021f6ea34",
+      "courseId": "course-1",
+      "lecturerId": "user-1",
+      "yoklamaKodu": "45254752-399d-403e-bdd5-0e97d6ae17bd",
+      "createdAt": "2026-07-01T21:58:35.756Z",
+      "status": "active",
+      "suiTxHash": null
+    }
+  ],
+  "attendances": [
+    {
+      "id": "cb8b6093-24bf-4039-b2e7-ce42fe5cbfa3",
+      "sessionId": "01f98ec1-191b-4537-bc98-731021f6ea34",
+      "studentId": "std-1",
+      "studentName": "Ali Yilmaz",
+      "portalHash": "63f21be7f2b3ac9f97c604c9b60f3e5e2107f07728a774ae250af90ffd3ffa35",
+      "bleToken": "63f21be7f2b3ac9f",
+      "deviceId": "android_device_001",
+      "portalJoinedAt": "2026-07-01T21:58:54.691Z",
+      "bleVerifiedAt": "2026-07-01T21:59:45.670Z",
+      "bleVerified": true,
+      "suiHash": null
+    },
+    {
+      "id": "9c7625ac-3b95-4805-83a5-c84c28727dc4",
+      "sessionId": "01f98ec1-191b-4537-bc98-731021f6ea34",
+      "studentId": "std-4",
+      "studentName": "Zeynep Arslan",
+      "portalHash": "93ae7b5a14e96ffcae1388db92152624f332fa2f8b86fae81825786386f82e9e",
+      "bleToken": "93ae7b5a14e96ffc",
+      "deviceId": "android_device_001",
+      "portalJoinedAt": "2026-07-01T21:59:01.446Z",
+      "bleVerifiedAt": "2026-07-01T21:59:45.670Z",
+      "bleVerified": true,
+      "suiHash": null
+    },
+    {
+      "id": "a1bb0a35-52e1-480e-b195-60df50bea5db",
+      "sessionId": "01f98ec1-191b-4537-bc98-731021f6ea34",
+      "studentId": "std-5",
+      "studentName": "Can Ozturk",
+      "portalHash": "5b5027f5b3f30777a762c8d160e22d0da82557325ba568bfcf2dc418e8064bc8",
+      "bleToken": "5b5027f5b3f30777",
+      "deviceId": "android_device_002",
+      "portalJoinedAt": "2026-07-01T21:59:09.322Z",
+      "bleVerifiedAt": "2026-07-01T21:59:45.670Z",
+      "bleVerified": true,
+      "suiHash": null
+    }
+  ]
+}
