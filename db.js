@@ -10,15 +10,22 @@ const DB_FILE = path.join(__dirname, 'data.json');
 // Başlangıç verisi
 const initialData = {
     users: [
-        {
-            id: 'user-1',
-            username: 'zafer.bozyer',
-            // Şifre: "akademisyen123"
-            password: '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LPVImber0/e',
-            fullName: 'Prof. Dr. Zafer Bozyer',
-            role: 'lecturer'
-        }
-    ],
+    {
+        id: 'user-1',
+        username: 'zafer.bozyer',
+        password: '$2a$10$EpZZ5TCxK56Tex6.e/TZOuc9b5VVC6E1Fjt7.NDmLaLrtWUq5g14W',
+        fullName: 'Prof. Dr. Zafer Bozyer',
+        role: 'lecturer'
+    },
+    {
+        id: 'user-2',
+        username: '2021001',
+        password: '$2a$10$qoRnl24ijexBRKbqnK9ftOyKEL54h396yHUgD7NBfdWJYijB1xGK6',
+        fullName: 'Ali Yilmaz',
+        role: 'student',
+        studentId: 'std-1'
+    }
+],
     courses: [
         {
             id: 'course-1',
